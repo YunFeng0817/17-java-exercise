@@ -15,6 +15,8 @@ public class socket {
                 Scanner in = new Scanner(System.in);
                 System.out.println("请输入你想输入的话：");
                 input = in.nextLine();
+                if(input.equals("BYE"))
+                    System.exit(0);
                 send.println(input);
                 output=accept.readLine();
                 System.out.println(output);
