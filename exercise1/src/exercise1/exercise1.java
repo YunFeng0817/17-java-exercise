@@ -9,7 +9,7 @@ public class exercise1 {
 	 *
 	 */
 	public static void main(String[] args) {
-		// TODO ×Ô¶¯Éú³ÉµÄ·½·¨´æ¸ù
+		// TODO è‡ªåŠ¨ç”Ÿæˆçš„æ–¹æ³•å­˜æ ¹
 		textarea frame = new textarea();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.show();
@@ -19,13 +19,13 @@ public class exercise1 {
 class textarea extends JFrame{
 	private String content = new String();
 	private JTextArea text=new JTextArea("write words here",10,23);
-	private JButton analyse=new JButton("Í³¼ÆĞÅÏ¢");;
+	private JButton analyse=new JButton("ç»Ÿè®¡ä¿¡æ¯");;
 	private JLabel result=new JLabel();
 	private JScrollPane js= new JScrollPane(text);
 	private final int width=600,height=400;
 	public int rows=0,words=0,chars=0;
 	public textarea(){
-		setTitle("Í³¼Æ×Ö¶ÎĞÅÏ¢");
+		setTitle("ç»Ÿè®¡å­—æ®µä¿¡æ¯");
 		setSize(width, height);
 
 		JPanel container = new JPanel();
@@ -41,7 +41,7 @@ class textarea extends JFrame{
 					words=word.length;
 					String[] row = content.split("\n");
 					rows=row.length;
-					result.setText("Õâ¶ÎÎÄ×Ö¹²ÓĞ"+rows+"ĞĞ "+words+"¸öµ¥´Ê "+chars+"¸ö×Ö·û");
+					result.setText("è¿™æ®µæ–‡å­—å…±æœ‰"+rows+"è¡Œ "+words+"ä¸ªå•è¯ "+chars+"ä¸ªå­—ç¬¦");
 				}
 			}
 		};
