@@ -21,25 +21,15 @@ public class chat extends JFrame {
     private String input=new String();
     private String output=new String();
     JButton button = new JButton("\u53D1\u9001");
-    JTextArea textArea = new JTextArea();
-    socketIn in = new socketIn();
-    socketOut out = new socketOut();
-    JTextArea textArea_1;
+    JTextArea textArea;
+    JTextArea text = new JTextArea();
     /**
      * Launch the application.
      */
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    chat frame = new chat();
-                    frame.setVisible(true);
-                    frame.action();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        chat frame = new chat();
+        frame.setVisible(true);
+        frame.socket();
     }
 
     /**
@@ -47,7 +37,7 @@ public class chat extends JFrame {
      */
     public chat(){
         button = new JButton("\u53D1\u9001");
-        textArea = new JTextArea();
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 800, 800);
         contentPane = new JPanel();
@@ -65,6 +55,7 @@ public class chat extends JFrame {
         scrollPane.validate();
         panel.add(scrollPane);
 
+        textArea = new JTextArea();
         textArea.setFont(new Font("微软雅黑", Font.BOLD, 20));
         scrollPane.setViewportView(textArea);
 
@@ -72,74 +63,59 @@ public class chat extends JFrame {
         scrollPane_1.setBounds(0, 0, 782, 541);
         contentPane.add(scrollPane_1);
 
-        JTextArea textArea_1 = new JTextArea();
-        textArea_1.setEditable(false);
-        textArea_1.setWrapStyleWord(true);
-        textArea_1.setLineWrap(true);
-        textArea_1.setFont(new Font("微软雅黑", Font.BOLD, 20));
-        scrollPane_1.setViewportView(textArea_1);
 
+        text.setEditable(false);
+        text.setWrapStyleWord(true);
+        text.setLineWrap(true);
+        text.setFont(new Font("微软雅黑", Font.BOLD, 20));
+        scrollPane_1.setViewportView(text);
+
+        button.setBounds(669, 187, 113, 27);
+        panel.add(button);
         button.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 input = textArea.getText();
                 textArea.setText("");
-                textArea_1.append("\t\t\t\t"+input+"\n");
+                text.append(input);
             }
         });
-        button.setBounds(669, 187, 113, 27);
-        panel.add(button);
 
-
-        out.start();
-        in.start();
     }
 
-    public void action(){
-        if (!input.equals(""))
-        {
-            this.repaint();
-        }
-        if(output.equals(""))
-        {
-            this.repaint();
-        }
-    }
-
-    public class socketOut extends Thread{
-        public void run(){
-            try {
-                Socket client = new Socket("localhost", 8000);
-                BufferedReader accept = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                while(!output.equals("")){
-                    output = accept.readLine();
-                    textArea_1.append(output);
-                }
-            }
-
-            catch (IOException g){
-                System.out.println("IOException"+"type:e "+g);
-            }
-        }
-    }
-
-    public class socketIn extends Thread{
-        public void run(){
-            try {
-                Socket client = new Socket("localhost", 8000);
-                PrintWriter send;
-                send = new PrintWriter(client.getOutputStream(), true);
-                while(true){
-                    while(input.equals("")){
-
+    //链接服务器
+    public void socket(){
+        try {
+            Socket client = new Socket("localhost", 8000);
+            PrintWriter send;
+            send = new PrintWriter(client.getOutputStream(),true);
+            //从服务器接收信息
+            Thread socketOut  = new Thread(){
+                public void run(){
+                    try{
+                        BufferedReader accept = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                        while(true){
+                            output = accept.readLine();
+                            text.append(output);
+                        }
                     }
-                    send.println(input);
-                    input="";
+                    catch (IOException e){
+                        System.out.println(e);
+                    }
                 }
-            }
+            };
+            socketOut.start();
+            //发送到服务器
+            while(true){
+                while(input.equals("")){
 
-            catch (IOException g){
-                System.out.println("IOException"+"type:e "+g);
+                }
+                send.println(input);
+                input="";
             }
+        }
+        catch (IOException g){
+            System.out.println("IOException"+"type:e "+g);
         }
     }
 }
