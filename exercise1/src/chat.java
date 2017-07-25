@@ -72,13 +72,11 @@ public class chat extends JFrame {
 
         button.setBounds(669, 187, 113, 27);
         panel.add(button);
-        button.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                input = textArea.getText();
-                textArea.setText("");
-                text.append(input);
-            }
+        button.addActionListener(e -> {
+            input = textArea.getText();
+            textArea.setText("");
+            text.append(input);
+            input="";
         });
 
     }
@@ -87,17 +85,24 @@ public class chat extends JFrame {
     public void socket(){
         try {
             Socket client = new Socket("localhost", 8000);
-            PrintWriter send;
-            send = new PrintWriter(client.getOutputStream(),true);
+            BufferedReader accept = new BufferedReader(new InputStreamReader(client.getInputStream()));
+
             //从服务器接收信息
             Thread socketOut  = new Thread(){
                 public void run(){
                     try{
-                        BufferedReader accept = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                        PrintWriter send;
+                        send = new PrintWriter(client.getOutputStream(),true);
                         while(true){
-                            output = accept.readLine();
-                            text.append(output);
+                            while(input.equals("")){
+
+                            }
+                            send.println(input);
+                            try{sleep(500);}
+                            catch(InterruptedException e)
+                            {}
                         }
+
                     }
                     catch (IOException e){
                         System.out.println(e);
@@ -105,14 +110,12 @@ public class chat extends JFrame {
                 }
             };
             socketOut.start();
-            //发送到服务器
             while(true){
-                while(input.equals("")){
-
-                }
-                send.println(input);
-                input="";
+                output = accept.readLine();
+                text.append(output);
             }
+            //发送到服务器
+
         }
         catch (IOException g){
             System.out.println("IOException"+"type:e "+g);
