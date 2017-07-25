@@ -22,13 +22,16 @@ public class chat extends JFrame {
     JButton button = new JButton("\u53D1\u9001");
     JTextArea textArea;
     JTextArea text = new JTextArea();
+    private static int IntPort = 0;
     /**
      * Launch the application.
      */
     public static void main(String[] args) {
         chat frame = new chat();
         frame.setVisible(true);
-        frame.socket();
+        while(IntPort==0){
+        }
+        frame.socket(IntPort);
     }
 
     /**
@@ -71,6 +74,24 @@ public class chat extends JFrame {
 
         button.setBounds(669, 187, 113, 27);
         panel.add(button);
+
+        JTextArea textArea_1 = new JTextArea();
+        textArea_1.setBounds(560, 0, 106, 24);
+        panel.add(textArea_1);
+
+        JButton btnNewButton = new JButton("\u8FDE\u63A5");
+        btnNewButton.addActionListener(e -> {
+            if(e.getSource()==btnNewButton){
+                String port = textArea_1.getText();
+                IntPort = Integer.parseInt(port);
+            }
+        });
+        btnNewButton.setBounds(669, -2, 113, 27);
+        panel.add(btnNewButton);
+
+        JLabel label = new JLabel("\u8BF7\u8F93\u5165\u5BF9\u65B9\u7684\u7AEF\u53E3\u53F7");
+        label.setBounds(416, 2, 135, 22);
+        panel.add(label);
         button.addActionListener(e -> {
             input = textArea.getText();
             textArea.setText("");
@@ -81,11 +102,11 @@ public class chat extends JFrame {
     }
 
     //链接服务器
-    public void socket(){
+    public void socket(int port){
         try {
-            Socket client = new Socket("localhost", 8000);
+            Socket client = new Socket("localhost", port);
+            text.append("连接服务器成功"+"\n");
             BufferedReader accept = new BufferedReader(new InputStreamReader(client.getInputStream()));
-
 
             //发送到服务器  开一个新线程
             Thread socketOut  = new Thread(){
