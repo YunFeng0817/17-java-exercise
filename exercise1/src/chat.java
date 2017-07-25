@@ -46,6 +46,9 @@ public class chat extends JFrame {
      * Create the frame.
      */
     public chat() {
+        lblNewLabel = new JLabel("欢迎");
+        button = new JButton("\u53D1\u9001");
+        textArea = new JTextArea();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 800, 800);
         contentPane = new JPanel();
@@ -60,6 +63,7 @@ public class chat extends JFrame {
 
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(0, 31, 782, 157);
+        scrollPane.validate();
         panel.add(scrollPane);
 
         textArea.setFont(new Font("微软雅黑", Font.BOLD, 20));
@@ -69,7 +73,7 @@ public class chat extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 input = textArea.getText();
                 textArea.setText("");
-                label=label+"\n"+"                                      "+input;
+                label=label+"                                                                      "+input+"\n";
                 lblNewLabel.setText(label);
             }
         });
