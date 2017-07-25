@@ -68,6 +68,7 @@ public class chat extends JFrame {
         scrollPane_1.setAlignmentX(Component.LEFT_ALIGNMENT);
         scrollPane_1.setBounds(0, 0, 388, 541);
         contentPane.add(scrollPane_1);
+        fromFriend.setTabSize(4);
         fromFriend.setBorder(null);
         fromFriend.setForeground(new Color(255, 160, 122));
 
@@ -106,6 +107,7 @@ public class chat extends JFrame {
         contentPane.add(scrollPane_2);
 
         fromMe = new JTextArea();
+        fromMe.setTabSize(4);
         fromMe.setBorder(null);
         fromMe.setEditable(false);
         fromMe.setLineWrap(true);
@@ -117,7 +119,6 @@ public class chat extends JFrame {
             input = textArea.getText();
             textArea.setText("");
             fromMe.append("我说："+input+"\n");
-            input="";
         });
 
     }
@@ -139,10 +140,22 @@ public class chat extends JFrame {
                             while(input.equals("")){
 
                             }
+                            if(input.indexOf("\n")!=-1)
+                            {
+                                try{sleep(10);}
+                                catch(InterruptedException e)
+                                {}
+                                String[] arys = input.split("\n");
+                                input="";
+                                for (int i=0;i<arys.length;i++)
+                                {
+                                    input+=arys[i];
+                                    input+="π";
+                                }
+                                System.out.println(input);
+                            }
                             send.println(input);
-                            try{sleep(500);}
-                            catch(InterruptedException e)
-                            {}
+                            input="";
                         }
 
                     }
@@ -155,7 +168,20 @@ public class chat extends JFrame {
             //从服务器接收信息
             while(true){
                 output = accept.readLine();
-                fromFriend.append("他(她)说："+output+"\n");
+                if (output.indexOf("π")!=-1)
+                {
+                    fromFriend.append("他(她)说：");
+                    //System.out.println(output);
+                    String[] arys = output.split("π");
+                    for(int i=0;i<arys.length;i++)
+                    {
+                        fromFriend.append(arys[i]+"\n");
+                    }
+                }
+                else if (!output.equals("")){
+                    fromFriend.append("他(她)说："+output+"\n");
+                }
+                output="";
             }
 
         }
