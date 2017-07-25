@@ -1,5 +1,4 @@
 import java.awt.*;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -75,7 +74,7 @@ public class chat extends JFrame {
         button.addActionListener(e -> {
             input = textArea.getText();
             textArea.setText("");
-            text.append(input);
+            text.append("\t\t\t\t"+input+"\n");
             input="";
         });
 
@@ -87,7 +86,8 @@ public class chat extends JFrame {
             Socket client = new Socket("localhost", 8000);
             BufferedReader accept = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
-            //从服务器接收信息
+
+            //发送到服务器  开一个新线程
             Thread socketOut  = new Thread(){
                 public void run(){
                     try{
@@ -110,11 +110,11 @@ public class chat extends JFrame {
                 }
             };
             socketOut.start();
+            //从服务器接收信息
             while(true){
                 output = accept.readLine();
-                text.append(output);
+                text.append(output+"\n");
             }
-            //发送到服务器
 
         }
         catch (IOException g){
