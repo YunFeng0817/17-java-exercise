@@ -1,5 +1,4 @@
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
+import java.awt.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -9,13 +8,24 @@ import javax.swing.JTextArea;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Font;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import javax.swing.JLabel;
 
 public class chat extends JFrame {
 
     private JPanel contentPane;
-
+    private String input=new String();
+    private String output=new String();
+    private String label = "";
+    JLabel lblNewLabel = new JLabel("欢迎");
+    JButton button = new JButton("\u53D1\u9001");
+    JTextArea textArea = new JTextArea();
+    socketIn in = new socketIn();
+    socketOut out = new socketOut();
     /**
      * Launch the application.
      */
@@ -52,13 +62,15 @@ public class chat extends JFrame {
         scrollPane.setBounds(0, 31, 782, 157);
         panel.add(scrollPane);
 
-        JTextArea textArea = new JTextArea();
         textArea.setFont(new Font("微软雅黑", Font.BOLD, 20));
         scrollPane.setViewportView(textArea);
 
-        JButton button = new JButton("\u53D1\u9001");
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                input = textArea.getText();
+                textArea.setText("");
+                label=label+"\n"+"                                      "+input;
+                lblNewLabel.setText(label);
             }
         });
         button.setBounds(669, 187, 113, 27);
@@ -68,8 +80,49 @@ public class chat extends JFrame {
         scrollPane_1.setBounds(0, 0, 782, 541);
         contentPane.add(scrollPane_1);
 
-        JLabel lblNewLabel = new JLabel("欢迎");
         lblNewLabel.setFont(new Font("黑体", Font.PLAIN, 20));
         scrollPane_1.setViewportView(lblNewLabel);
+        out.start();
+        in.start();
+    }
+
+    public class socketOut extends Thread{
+        public void run(){
+            try {
+                Socket client = new Socket("localhost", 8000);
+                BufferedReader accept = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                while(true){
+                    output = accept.readLine();
+                    label = label+"\n"+output;
+                    lblNewLabel.setText(label);
+                }
+            }
+
+            catch (IOException g){
+                System.out.println("IOException"+"type:e "+g);
+            }
+        }
+    }
+
+    public class socketIn extends Thread{
+        public void run(){
+            try {
+                Socket client = new Socket("localhost", 8000);
+                PrintWriter send;
+                send = new PrintWriter(client.getOutputStream(), true);
+                while(true){
+                    while(input.equals("")){
+
+                    }
+                    send.println(input);
+                    input="";
+                }
+            }
+
+            catch (IOException g){
+                System.out.println("IOException"+"type:e "+g);
+            }
+        }
     }
 }
+
