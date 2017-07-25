@@ -21,7 +21,8 @@ public class chat extends JFrame {
     private String output=new String();
     JButton button = new JButton("\u53D1\u9001");
     JTextArea textArea;
-    JTextArea text = new JTextArea();
+    JTextArea fromFriend = new JTextArea();
+    JTextArea fromMe = new JTextArea();
     private static int IntPort = 0;
     /**
      * Launch the application.
@@ -59,18 +60,23 @@ public class chat extends JFrame {
 
         textArea = new JTextArea();
         textArea.setFont(new Font("微软雅黑", Font.BOLD, 20));
+        textArea.setLineWrap(true);
         scrollPane.setViewportView(textArea);
 
         JScrollPane scrollPane_1 = new JScrollPane();
-        scrollPane_1.setBounds(0, 0, 782, 541);
+        scrollPane_1.setBorder(null);
+        scrollPane_1.setAlignmentX(Component.LEFT_ALIGNMENT);
+        scrollPane_1.setBounds(0, 0, 388, 541);
         contentPane.add(scrollPane_1);
+        fromFriend.setBorder(null);
+        fromFriend.setForeground(new Color(255, 160, 122));
 
 
-        text.setEditable(false);
-        text.setWrapStyleWord(true);
-        text.setLineWrap(true);
-        text.setFont(new Font("微软雅黑", Font.BOLD, 20));
-        scrollPane_1.setViewportView(text);
+        fromFriend.setEditable(false);
+        fromFriend.setWrapStyleWord(true);
+        fromFriend.setLineWrap(true);
+        fromFriend.setFont(new Font("微软雅黑", Font.BOLD, 20));
+        scrollPane_1.setViewportView(fromFriend);
 
         button.setBounds(669, 187, 113, 27);
         panel.add(button);
@@ -92,10 +98,25 @@ public class chat extends JFrame {
         JLabel label = new JLabel("\u8BF7\u8F93\u5165\u5BF9\u65B9\u7684\u7AEF\u53E3\u53F7");
         label.setBounds(416, 2, 135, 22);
         panel.add(label);
+
+        JScrollPane scrollPane_2 = new JScrollPane();
+        scrollPane_2.setAlignmentX(Component.LEFT_ALIGNMENT);
+        scrollPane_2.setBorder(null);
+        scrollPane_2.setBounds(388, 0, 394, 541);
+        contentPane.add(scrollPane_2);
+
+        fromMe = new JTextArea();
+        fromMe.setBorder(null);
+        fromMe.setEditable(false);
+        fromMe.setLineWrap(true);
+        fromMe.setForeground(Color.MAGENTA);
+        fromMe.setWrapStyleWord(true);
+        fromMe.setFont(new Font("微软雅黑", Font.BOLD, 20));
+        scrollPane_2.setViewportView(fromMe);
         button.addActionListener(e -> {
             input = textArea.getText();
             textArea.setText("");
-            text.append("\t\t\t\t"+input+"\n");
+            fromMe.append("我说："+input+"\n");
             input="";
         });
 
@@ -105,7 +126,7 @@ public class chat extends JFrame {
     public void socket(int port){
         try {
             Socket client = new Socket("localhost", port);
-            text.append("连接服务器成功"+"\n");
+            fromFriend.append("连接服务器成功"+"\n");
             BufferedReader accept = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
             //发送到服务器  开一个新线程
@@ -134,11 +155,12 @@ public class chat extends JFrame {
             //从服务器接收信息
             while(true){
                 output = accept.readLine();
-                text.append(output+"\n");
+                fromFriend.append("他(她)说："+output+"\n");
             }
 
         }
         catch (IOException g){
+            fromFriend.append("端口号错误，服务器连接失败");
             System.out.println("IOException"+"type:e "+g);
         }
     }
