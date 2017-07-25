@@ -20,12 +20,11 @@ public class chat extends JFrame {
     private JPanel contentPane;
     private String input=new String();
     private String output=new String();
-    private String label = "";
-    JLabel lblNewLabel = new JLabel("欢迎");
     JButton button = new JButton("\u53D1\u9001");
     JTextArea textArea = new JTextArea();
     socketIn in = new socketIn();
     socketOut out = new socketOut();
+    JTextArea textArea_1;
     /**
      * Launch the application.
      */
@@ -35,6 +34,7 @@ public class chat extends JFrame {
                 try {
                     chat frame = new chat();
                     frame.setVisible(true);
+                    frame.action();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -45,8 +45,7 @@ public class chat extends JFrame {
     /**
      * Create the frame.
      */
-    public chat() {
-        lblNewLabel = new JLabel("欢迎");
+    public chat(){
         button = new JButton("\u53D1\u9001");
         textArea = new JTextArea();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,25 +68,41 @@ public class chat extends JFrame {
         textArea.setFont(new Font("微软雅黑", Font.BOLD, 20));
         scrollPane.setViewportView(textArea);
 
+        JScrollPane scrollPane_1 = new JScrollPane();
+        scrollPane_1.setBounds(0, 0, 782, 541);
+        contentPane.add(scrollPane_1);
+
+        JTextArea textArea_1 = new JTextArea();
+        textArea_1.setEditable(false);
+        textArea_1.setWrapStyleWord(true);
+        textArea_1.setLineWrap(true);
+        textArea_1.setFont(new Font("微软雅黑", Font.BOLD, 20));
+        scrollPane_1.setViewportView(textArea_1);
+
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 input = textArea.getText();
                 textArea.setText("");
-                label=label+"                                                                      "+input+"\n";
-                lblNewLabel.setText(label);
+                textArea_1.append("\t\t\t\t"+input+"\n");
             }
         });
         button.setBounds(669, 187, 113, 27);
         panel.add(button);
 
-        JScrollPane scrollPane_1 = new JScrollPane();
-        scrollPane_1.setBounds(0, 0, 782, 541);
-        contentPane.add(scrollPane_1);
 
-        lblNewLabel.setFont(new Font("黑体", Font.PLAIN, 20));
-        scrollPane_1.setViewportView(lblNewLabel);
         out.start();
         in.start();
+    }
+
+    public void action(){
+        if (!input.equals(""))
+        {
+            this.repaint();
+        }
+        if(output.equals(""))
+        {
+            this.repaint();
+        }
     }
 
     public class socketOut extends Thread{
@@ -95,10 +110,9 @@ public class chat extends JFrame {
             try {
                 Socket client = new Socket("localhost", 8000);
                 BufferedReader accept = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                while(true){
+                while(!output.equals("")){
                     output = accept.readLine();
-                    label = label+"\n"+output;
-                    lblNewLabel.setText(label);
+                    textArea_1.append(output);
                 }
             }
 
