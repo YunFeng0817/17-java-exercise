@@ -6,8 +6,8 @@ public class server {
     // Main method
     public static void main(String[] args) {
         try {
-            ServerSocket myserver = new ServerSocket(8000);
-            ServerSocket myAnotherServer = new ServerSocket(7000);
+            ServerSocket myserver = new ServerSocket(8000, 1, InetAddress.getByName("192.168.199.184"));
+            ServerSocket myAnotherServer = new ServerSocket(7000,1, InetAddress.getByName("192.168.199.184"));
             Socket listening = myserver.accept();
             Socket listen = myAnotherServer.accept();
 

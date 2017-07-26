@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import javax.swing.JLabel;
 
@@ -126,7 +127,7 @@ public class chat extends JFrame {
     //链接服务器
     public void socket(int port){
         try {
-            Socket client = new Socket("localhost", port);
+            Socket client = new Socket(InetAddress.getByName("192.168.199.184"), port);
             fromFriend.append("连接服务器成功"+"\n");
             BufferedReader accept = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
@@ -142,7 +143,7 @@ public class chat extends JFrame {
                             }
                             if(input.indexOf("\n")!=-1)
                             {
-                                try{sleep(10);}
+                                try{sleep(50);}
                                 catch(InterruptedException e)
                                 {}
                                 String[] arys = input.split("\n");
@@ -170,7 +171,7 @@ public class chat extends JFrame {
                 output = accept.readLine();
                 if (output.indexOf("π")!=-1)
                 {
-                    fromFriend.append("他(她)说：");
+                    fromFriend.append("他(她)说："+"\n");
                     //System.out.println(output);
                     String[] arys = output.split("π");
                     for(int i=0;i<arys.length;i++)
